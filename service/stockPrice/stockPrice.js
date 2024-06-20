@@ -6,9 +6,9 @@ async function getStockPrice(code) {
 
     const headers={
         'content-type' : 'application/json; charset=utf-8',
-        'authorization': `Bearer ${process.env.VTS_TOKEN}`,
-        'appkey': process.env.VTS_APPKEY,
-        'appsecret': process.env.VTS_APPSECRET,
+        'authorization': `Bearer ${process.env.VTS_TOKEN_1}`,
+        'appkey': process.env.VTS_APPKEY_1,
+        'appsecret': process.env.VTS_APPSECRET_1,
         'tr_id': 'FHKST01010100'
     }
 
@@ -18,7 +18,7 @@ async function getStockPrice(code) {
     }
 
     const response = await axios.get(
-        `${process.env.VTS}/uapi/domestic-stock/v1/quotations/inquire-price`,
+        `${process.env.VTS_1}/uapi/domestic-stock/v1/quotations/inquire-price`,
         {headers, params}
     );
 
@@ -30,4 +30,31 @@ async function getStockPrice(code) {
     return result;
 }
 
-module.exports = {getStockPrice};
+async function getStockPriceUs(code){
+    const url = `${process.env.VTS_2}/uapi/overseas-price/v1/quotations/price`;
+    const params = {
+        AUTH: "",
+        EXCD: 'BAQ',
+        SYMB: code
+    };
+
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': `Bearer ${process.env.VTS_TOKEN_2}`,
+        'appkey': process.env.VTS_APPKEY_2,
+        'appsecret': process.env.VTS_APPSECRET_2,
+        'tr_id': 'HHDFS00000300',
+    };
+
+    const response = await axios.get(
+        `${process.env.VTS_2}/uapi/domestic-stock/v1/quotations/inquire-ccnl`,
+        {headers, params}
+    );
+
+    const result = Math.round(response.data.output.last*1300);
+
+    console.log("미국주식 가격 :", result);
+    return result;
+}
+
+module.exports = {getStockPrice, getStockPriceUs};
