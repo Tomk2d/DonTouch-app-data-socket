@@ -121,7 +121,7 @@ router.post("/buyCombinationStock", async function (req, res) {
         const combinationId = Math.floor(Math.random() * 999999999) + 1;
         for (stockItem of stockList) {
             const marketType = stockItem.marketType;
-            if(stockItem.marketType === "KR"){
+            if(stockItem.marketType === "KSC"){
                 const nowPrice = await stockPriceService.getStockPrice(stockItem.stockCode);
                 const totalPrice = nowPrice * stockItem.amount*-1;
                 const bankResult = await axios.post("http://localhost:8081/api/user/bank/cal", {userId:req.body.userId, price: totalPrice});

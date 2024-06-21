@@ -34,6 +34,10 @@ app.use("/api/pendingOrder",pendingOrderRouter);
 const myPageRouter = require("./routes/myPageRouter");
 app.use("/api/myPage",myPageRouter);
 
+const graphDataRouter = require("./routes/graphStockRouter");
+app.use("/api/graph", graphDataRouter);
+
+
 const batchFunc = () => {
   cron.schedule('*/2 * * * * 1-5', async() => {
     try {

@@ -67,7 +67,7 @@ async function calculatePriceUs(stockName, stockCode, userId, price, amount , bu
 
 async function calculateCombinationPrice(stockName, stockCode, userId, price, amount , buyOrSell, combinationId, marketType) {
     console.log("marketType : ",marketType);
-    if(marketType === 'KR') {
+    if(marketType === 'KSC') {
         await kafkaProducer.sendBuyCombinationKrStock(stockName, userId, stockCode, amount, price, price*amount, price*amount, 0, combinationId);
         console.log(
             "구매된 주식 : ",

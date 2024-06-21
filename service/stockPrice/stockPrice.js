@@ -109,9 +109,10 @@ async function getMyPageKrStockPrice(code) {
     );
 
     const priceArray = response.data.output;
-    const result = priceArray.stck_prpr;
+    const price = priceArray.stck_prpr;
+    const rate = priceArray.prdy_vrss;
 
-    console.log("테스트 결과 :" ,result);
+    const result = { price : price, rate : rate };
 
     return result;
 }
@@ -138,9 +139,103 @@ async function getMyPageUsStockPrice(code, marketType){
         {headers, params}
     );
 
-    const result = Math.round(response.data.output.last*1391);
+    const price = Math.round(response.data.output.last*1391);
+    const rate = response.data.output.rate;
+    result = {price : price, rate : rate};
+    return result;
+}
+
+// 6-1. 한국 그래프 데이터. 일 주 월 년 기준.
+async function getKRGraphData(date_format, code, end_date) {
+
+    const BASE_URL = process.env.VTS_6; // 모의투자용 도메인
+    const URL_PATH = '/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice';
+
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        authorization: `Bearer ${process.env.VTS_TOKEN_6}`,
+        appkey: process.env.VTS_APPKEY_6,
+        appsecret: process.env.VTS_APPSECRET_6,
+        tr_id: 'FHKST03010100',
+    };
+
+    const params = {
+        FID_COND_MRKT_DIV_CODE: 'J',
+        FID_INPUT_ISCD: code,
+        FID_INPUT_DATE_1: '19500101',
+        FID_INPUT_DATE_2: end_date,
+        FID_PERIOD_DIV_CODE: date_format,
+        FID_ORG_ADJ_PRC: '0'
+    };
+
+    const response = await axios.get(`${BASE_URL}${URL_PATH}`, {
+        headers: headers,
+        params: params
+    })
+
+    const priceArray = response.data.output2;
+    console.log("결과 : ",priceArray);
+
+    const result = priceArray.map((price) => {
+        return {
+            code: code,
+            open: Number(price.stck_oprc),
+            close: Number(price.stck_clpr),
+            high: Number(price.stck_hgpr),
+            low: Number(price.stck_lwpr),
+            volume: Number(price.acml_vol),
+            date: price.stck_bsop_date,
+        };
+    });
 
     return result;
 }
 
-module.exports = {getStockPriceRealTime, getStockPrice, getStockPriceUs, getMyPageKrStockPrice, getMyPageUsStockPrice};
+
+// 6-2. 한국 그래프 데이터. 일 주 월 년 기준.
+async function getUSGraphData(date_format, code, end_date) {
+
+    const BASE_URL = process.env.VTS_6; // 모의투자용 도메인
+    const URL_PATH = '/uapi/overseas-price/v1/quotations/inquire-daily-chartprice';
+
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        authorization: `Bearer ${process.env.VTS_TOKEN_6}`,
+        appkey: process.env.VTS_APPKEY_6,
+        appsecret: process.env.VTS_APPSECRET_6,
+        tr_id: 'FHKST03030100',
+    };
+
+    const params = {
+        FID_COND_MRKT_DIV_CODE: 'N',
+        FID_INPUT_ISCD: code,
+        FID_INPUT_DATE_1: '19500101',
+        FID_INPUT_DATE_2: end_date,
+        FID_PERIOD_DIV_CODE: date_format,
+        FID_ORG_ADJ_PRC: '0'
+    };
+
+    const response = await axios.get(`${BASE_URL}${URL_PATH}`, {
+        headers: headers,
+        params: params
+    })
+
+    const priceArray = response.data.output2;
+    console.log("결과 : ",priceArray);
+
+    const result = priceArray.map((price) => {
+        return {
+            code: code,
+            open: Number(price.stck_oprc),
+            close: Number(price.stck_clpr),
+            high: Number(price.stck_hgpr),
+            low: Number(price.stck_lwpr),
+            volume: Number(price.acml_vol),
+            date: price.stck_bsop_date,
+        };
+    });
+
+    return result;
+}
+
+module.exports = {getStockPriceRealTime, getStockPrice, getStockPriceUs, getMyPageKrStockPrice, getMyPageUsStockPrice, getKRGraphData, getUSGraphData};
