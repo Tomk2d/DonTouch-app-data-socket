@@ -7,9 +7,9 @@ const stockPriceService = require("../service/stockPrice/stockPrice");
 require("dotenv").config();
 
 
-router.post("/graphData", async function (req, res) {
+router.post("/graphDataKr", async function (req, res) {
     try{
-        const response = await stockPriceService.getGraphKRData(
+        const response = await stockPriceService.getKRGraphData(
             req.body.timeFormat,
             req.body.stockCode,
             req.body.endDate
@@ -18,7 +18,20 @@ router.post("/graphData", async function (req, res) {
     }catch(err){
         res.status(400).json({message: err.message});
     }
-})
+});
 
+router.post("/graphDataUs", async function (req, res) {
+    try{
+        const response = await stockPriceService.getUsGraphData(
+            req.body.timeFormat,
+            req.body.stockCode,
+            req.body.endDate,
+            req.body.marketType
+        );
+        res.status(200).json(response);
+    }catch(err){
+        res.status(400).json({message: err.message});
+    }
+});
 
 module.exports = router;

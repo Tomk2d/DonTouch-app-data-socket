@@ -191,9 +191,53 @@ async function getKRGraphData(date_format, code, end_date) {
     return result;
 }
 
+// 6-3. 한국 그래프 데이터. 일 주 월 기준.
+async function getUsGraphData(date_format, code, end_date, marketType) {
 
-// 6-2. 한국 그래프 데이터. 일 주 월 년 기준.
-async function getUSGraphData(date_format, code, end_date) {
+    const BASE_URL = process.env.VTS_6;
+    const URL_PATH = '/uapi/overseas-price/v1/quotations/dailyprice';
+
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8',
+        authorization: `Bearer ${process.env.VTS_TOKEN_6}`,
+        appkey: process.env.VTS_APPKEY_6,
+        appsecret: process.env.VTS_APPSECRET_6,
+        tr_id: 'HHDFS76240000',
+    };
+
+    const params = {
+        AUTH: "",
+        EXCD: marketType,
+        SYMB: code,
+        GUBN: date_format,
+        BYMD: "",
+        MODP: 1
+    };
+
+    const response = await axios.get(`${BASE_URL}${URL_PATH}`, {
+        headers: headers,
+        params: params
+    })
+
+    const priceArray = response.data.output2;
+
+    const result = priceArray.map((price) => {
+        return {
+            code: code,
+            open: Number(price.open),
+            close: Number(price.clos),
+            high: Number(price.high),
+            low: Number(price.low),
+            volume: Number(price.tvol),
+            date: price.xymd,
+        };
+    });
+
+    return result;
+}
+
+// 6-3. 한국 그래프 데이터. 일 주 월 년 기준. 소종목
+async function getUsGraphData2(date_format, code, end_date) {
 
     const BASE_URL = process.env.VTS_6; // 모의투자용 도메인
     const URL_PATH = '/uapi/overseas-price/v1/quotations/inquire-daily-chartprice';
@@ -203,16 +247,15 @@ async function getUSGraphData(date_format, code, end_date) {
         authorization: `Bearer ${process.env.VTS_TOKEN_6}`,
         appkey: process.env.VTS_APPKEY_6,
         appsecret: process.env.VTS_APPSECRET_6,
-        tr_id: 'FHKST03030100',
+        tr_id: 'HHDFS00000300',
     };
 
     const params = {
         FID_COND_MRKT_DIV_CODE: 'N',
         FID_INPUT_ISCD: code,
-        FID_INPUT_DATE_1: '19500101',
+        FID_INPUT_DATE_1: '19000101',
         FID_INPUT_DATE_2: end_date,
         FID_PERIOD_DIV_CODE: date_format,
-        FID_ORG_ADJ_PRC: '0'
     };
 
     const response = await axios.get(`${BASE_URL}${URL_PATH}`, {
@@ -226,10 +269,10 @@ async function getUSGraphData(date_format, code, end_date) {
     const result = priceArray.map((price) => {
         return {
             code: code,
-            open: Number(price.stck_oprc),
-            close: Number(price.stck_clpr),
-            high: Number(price.stck_hgpr),
-            low: Number(price.stck_lwpr),
+            open: Number(price.ovrs_nmix_oprc),
+            close: Number(price.ovrs_nmix_prpr),
+            high: Number(price.ovrs_nmix_hgpr),
+            low: Number(price.ovrs_nmix_lwpr),
             volume: Number(price.acml_vol),
             date: price.stck_bsop_date,
         };
@@ -238,4 +281,4 @@ async function getUSGraphData(date_format, code, end_date) {
     return result;
 }
 
-module.exports = {getStockPriceRealTime, getStockPrice, getStockPriceUs, getMyPageKrStockPrice, getMyPageUsStockPrice, getKRGraphData, getUSGraphData};
+module.exports = {getStockPriceRealTime, getStockPrice, getStockPriceUs, getMyPageKrStockPrice, getMyPageUsStockPrice, getKRGraphData, getUsGraphData,getUsGraphData2};
