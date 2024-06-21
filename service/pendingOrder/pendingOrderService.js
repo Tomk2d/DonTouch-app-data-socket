@@ -57,6 +57,7 @@ async function getAllPendingOrders() {
 // 여기가 계산 함수
 async function checkPrice() {
     let reservedStockList = await getAllPendingOrders();
+    let i =0;
     for (let reservedStock of reservedStockList) {
         // 총 예약된 애들중 주식 코드
         let code = reservedStock;
@@ -69,8 +70,11 @@ async function checkPrice() {
             continue;
         }
 
+        setTimeout(() => {
+        }, i * 50);
+        i++;
         // 해당 주식 코드의 현재가
-        let nowPrice = await stockPrice.getStockPrice(code);
+        let nowPrice = await stockPrice.getStockPriceRealTime(code);
 
         for (let order of resultArray) {
             if (order.buyOrSell === "buy" && order.price >= nowPrice) {
