@@ -87,7 +87,7 @@ function webSocketConnect(code) {
 function sendInitialMessages(ws, code) {
   const messageNow = JSON.stringify({
     header: {
-      approval_key: process.env.SOCKET_TOKEN,
+      approval_key: process.env.SOCKET_TOKEN_1,
       custtype: "P",
       tr_type: "1",
       "content-type": "utf-8",
@@ -103,7 +103,7 @@ function sendInitialMessages(ws, code) {
 
   const messageAsk = JSON.stringify({
     header: {
-      approval_key: process.env.SOCKET_TOKEN,
+      approval_key: process.env.SOCKET_TOKEN_1,
       custtype: "P",
       tr_type: "1",
       "content-type": "utf-8",

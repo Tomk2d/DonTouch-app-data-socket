@@ -30,11 +30,11 @@ async function getStockPrice(code) {
     return result;
 }
 
-async function getStockPriceUs(code){
+async function getStockPriceUs(code, marketType){
     const url = `${process.env.VTS_2}/uapi/overseas-price/v1/quotations/price`;
     const params = {
         AUTH: "",
-        EXCD: 'BAQ',
+        EXCD: marketType,
         SYMB: code
     };
 
@@ -51,9 +51,8 @@ async function getStockPriceUs(code){
         {headers, params}
     );
 
-    const result = Math.round(response.data.output.last*1300);
+    const result = Math.round(response.data.output.last*1391);
 
-    console.log("미국주식 가격 :", result);
     return result;
 }
 
