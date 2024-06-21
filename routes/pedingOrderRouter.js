@@ -84,7 +84,7 @@ router.post("/sellMarketPlaceOrder", async function (req, res) {
 
 router.post("/buyMarketPlaceOrderUs", async function (req, res) {
     try{
-        let nowPrice = await stockPriceService.getStockPriceUs(req.body.stockCode);
+        let nowPrice = await stockPriceService.getStockPriceUs(req.body.stockCode, req.body.marketType);
         const totalPrice = req.body.amount * nowPrice * -1;
         const bankResult = await axios.post("http://localhost:8081/api/user/bank/cal", {userId:req.body.userId, price: totalPrice});
         if(bankResult.data.success === true){
@@ -101,7 +101,7 @@ router.post("/buyMarketPlaceOrderUs", async function (req, res) {
 
 router.post("/sellMarketPlaceOrderUs", async function (req, res) {
     try{
-        const nowPrice = await stockPriceService.getStockPriceUs(req.body.stockCode);
+        const nowPrice = await stockPriceService.getStockPriceUs(req.body.stockCode, req.body.marketType);
         const holdingStockResult = await axios.post("http://localhost:8085/api/holding/sell/usStock",{userId:req.body.userId, usStockId:req.body.stockCode, usStockAmount:req.body.amount});
         if(holdingStockResult.data.success === true){
             await marketPriceService.calculatePriceUs(req.body.stockName, req.body.stockCode, req.body.userId, nowPrice, req.body.amount, "sell");
@@ -121,7 +121,7 @@ router.post("/buyCombinationStock", async function (req, res) {
         const combinationId = Math.floor(Math.random() * 999999999) + 1;
         for (stockItem of stockList) {
             const marketType = stockItem.marketType;
-            if(marketType === "kr"){
+            if(stockItem.marketType === "KR"){
                 const nowPrice = await stockPriceService.getStockPrice(stockItem.stockCode);
                 const totalPrice = nowPrice * stockItem.amount*-1;
                 const bankResult = await axios.post("http://localhost:8081/api/user/bank/cal", {userId:req.body.userId, price: totalPrice});
@@ -130,8 +130,8 @@ router.post("/buyCombinationStock", async function (req, res) {
                 }else{
                     res.status(400).json({message:'not enough money'});
                 }
-            }else if(marketType === "us"){
-                const nowPrice = await stockPriceService.getStockPriceUs(stockItem.stockCode);
+            }else if(stockItem.marketType === "BAY" || stockItem.marketType === "BAQ"){
+                const nowPrice = await stockPriceService.getStockPriceUs(stockItem.stockCode, stockItem.marketType);
                 const totalPrice = nowPrice * stockItem.amount*-1;
                 const bankResult = await axios.post("http://localhost:8081/api/user/bank/cal", {userId:req.body.userId, price: totalPrice});
                 if(bankResult.data.success === true){
