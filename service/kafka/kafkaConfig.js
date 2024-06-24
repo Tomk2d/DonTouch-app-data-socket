@@ -2,11 +2,11 @@ const {Kafka} = require('kafkajs');
 
 const kafka = new Kafka({
     clientId : 'pending-server',
-    brokers : ['localhost:9092']
+    brokers : ['43.203.202.153:9092']
 });
 
 const kafkaConf = {
-    "bootstrap.servers" : "localhost:9092",
+    "bootstrap.servers" : "43.203.202.153:9092",
     "key.serializer" : "org.apache.kafka.common.serialization.StringSerializer",
     "value.serializer" : "org.apache.kafka.common.serialization.StringSerializer",
 };
