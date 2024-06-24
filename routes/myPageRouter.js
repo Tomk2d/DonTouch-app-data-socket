@@ -11,6 +11,8 @@ router.post("/krStock", async function (req, res) {
         const stockList = req.body.stockList;
         let i= 0;
         let resultArray = [];
+        // 사용 예시
+
         for(stockItem of stockList){
             setTimeout(() => {}, i * 50);
             i++;
