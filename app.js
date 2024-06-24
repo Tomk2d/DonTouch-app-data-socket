@@ -29,13 +29,13 @@ app.use(cors());
 app.use("/", indexRouter);
 
 const pendingOrderRouter = require("./routes/pedingOrderRouter");
-app.use("/api/pendingOrder",pendingOrderRouter);
+app.use("/api/trading/pendingOrder",pendingOrderRouter);
 
 const myPageRouter = require("./routes/myPageRouter");
-app.use("/api/myPage",myPageRouter);
+app.use("/api/trading/myPage",myPageRouter);
 
 const graphDataRouter = require("./routes/graphStockRouter");
-app.use("/api/graph", graphDataRouter);
+app.use("/api/trading/graph", graphDataRouter);
 
 
 const batchFunc = () => {
