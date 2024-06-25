@@ -7,7 +7,7 @@ require("dotenv").config();
 
 const io = new Server({
   cors: {
-    origin: ["http://13.125.130.51:5173", "http://13.125.130.51:80"],
+    origin: "http://13.125.130.51:5173",
     methods: ["GET", "POST"],
   },
 });
