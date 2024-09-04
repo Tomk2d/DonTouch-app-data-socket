@@ -1,5 +1,8 @@
 # 한 발 앞선 생각 - Don Touch
 
+<img src = "https://github.com/user-attachments/assets/8046a260-25a0-47ca-a176-3a646355573b" width=150px>
+
+<br/>
 <br/>
 
 > 주최 : 신한투자증권
